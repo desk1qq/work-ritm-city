@@ -1,0 +1,11 @@
+test_idempotency_repeat (__main__.ContractTests) ... ok
+test_initial_fixture (__main__.ContractTests) ... ok
+test_interval_touch (__main__.ContractTests) ... ok
+test_stale_version (__main__.ContractTests) ... ok
+test_state_after_failure (__main__.ContractTests) ... ok
+test_unknown (__main__.ContractTests) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.042s
+
+OK

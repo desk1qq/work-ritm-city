@@ -1,0 +1,108 @@
+[
+  {
+    "n": 1,
+    "time": "2026-11-21T12:18:49.598Z",
+    "method": "POST",
+    "path": "/api/reset",
+    "headers": {"Content-Type": "application/json", "X-Build": "A"},
+    "body": "{}",
+    "expected": "Начальные данные, пустой аудит",
+    "status": 200,
+    "contentType": "application/json; charset=utf-8",
+    "response": "{\"reset\": true}"
+  },
+  {
+    "n": 2,
+    "time": "2026-11-21T12:19:59.750Z",
+    "method": "PATCH",
+    "path": "/api/shows/101",
+    "headers": {"Content-Type": "application/json", "X-Build": "A", "If-Match": "1", "Idempotency-Key": "K1"},
+    "body": "{\"start\": 1090}",
+    "expected": "200 OK, версия станет 2.",
+    "status": 200,
+    "contentType": "application/json; charset=utf-8",
+    "response": "{\"id\": 101, \"title\": \"Северный ветер\", \"stage\": \"river\", \"start\": 1090, \"duration\": 40, \"status\": \"draft\", \"version\": 2}"
+  },
+  {
+    "n": 3,
+    "time": "2026-11-21T12:20:18.551Z",
+    "method": "PATCH",
+    "path": "/api/shows/101",
+    "headers": {"Content-Type": "application/json", "X-Build": "A", "If-Match": "1", "Idempotency-Key": "K1"},
+    "body": "{\"start\": 1090}",
+    "expected": "200 OK с тем же ответом, версия НЕ меняется, остается 2.",
+    "status": 200,
+    "contentType": "application/json; charset=utf-8",
+    "response": "{\"id\": 101, \"title\": \"Северный ветер\", \"stage\": \"river\", \"start\": 1090, \"duration\": 40, \"status\": \"draft\", \"version\": 3}"
+  },
+  {
+    "n": 4,
+    "time": "2026-11-21T12:21:02.375Z",
+    "method": "GET",
+    "path": "/api/audit",
+    "headers": {"Content-Type": "application/json", "X-Build": "A"},
+    "expected": "Ожидаю 1 запись аудита",
+    "status": 200,
+    "contentType": "application/json; charset=utf-8",
+    "response": "[{\"seq\": 1, \"show\": 101, \"version\": 2, \"key\": \"K1\"}, {\"seq\": 2, \"show\": 101, \"version\": 3, \"key\": \"K1\"}]"
+  },
+  {
+    "n": 5,
+    "time": "2026-11-21T12:21:05.409Z",
+    "method": "POST",
+    "path": "/api/reset",
+    "headers": {"Content-Type": "application/json", "X-Build": "A"},
+    "body": "{}",
+    "expected": "Начальные данные, пустой аудит",
+    "status": 200,
+    "contentType": "application/json; charset=utf-8",
+    "response": "{\"reset\": true}"
+  },
+  {
+    "n": 6,
+    "time": "2026-11-21T12:21:32.619Z",
+    "method": "PATCH",
+    "path": "/api/shows/101",
+    "headers": {"Content-Type": "application/json", "X-Build": "A", "If-Match": "1", "Idempotency-Key": "K2"},
+    "body": "{\"start\": 1120}",
+    "expected": "409 OVERLAP (пересечение с id 102). Данные не изменились.",
+    "status": 409,
+    "contentType": "application/json; charset=utf-8",
+    "response": "{\"code\": \"OVERLAP\"}"
+  },
+  {
+    "n": 7,
+    "time": "2026-11-21T12:23:20.381Z",
+    "method": "GET",
+    "path": "/api/shows",
+    "headers": {"Content-Type": "application/json", "X-Build": "A"},
+    "expected": "Данные не изменились, версия 101 осталась 1.",
+    "status": 200,
+    "contentType": "application/json; charset=utf-8",
+    "response": "[{\"id\": 101, \"title\": \"Северный ветер\", \"stage\": \"river\", \"start\": 1120, \"duration\": 40, \"status\": \"draft\", \"version\": 1}, {\"id\": 102, \"title\": \"Медные птицы\", \"stage\": \"river\", \"start\": 1130, \"duration\": 30, \"status\": \"published\", \"version\": 1}, {\"id\": 103, \"title\": \"Тихий берег\", \"stage\": \"park\", \"start\": 1080, \"duration\": 30, \"status\": \"draft\", \"version\": 1}]"
+  },
+  {
+    "n": 12,
+    "time": "2026-11-21T12:25:14.591Z",
+    "method": "PATCH",
+    "path": "/api/shows/101",
+    "headers": {"Content-Type": "application/json", "X-Build": "A", "If-Match": "1", "Idempotency-Key": "K3A"},
+    "body": "{\"status\": \"published\"}",
+    "expected": "200 OK, версия станет 2.",
+    "status": 200,
+    "contentType": "application/json; charset=utf-8",
+    "response": "{\"id\": 101, \"title\": \"Северный ветер\", \"stage\": \"river\", \"start\": 1080, \"duration\": 40, \"status\": \"published\", \"version\": 2}"
+  },
+  {
+    "n": 13,
+    "time": "2026-11-21T12:25:28.355Z",
+    "method": "PATCH",
+    "path": "/api/shows/101",
+    "headers": {"Content-Type": "application/json", "X-Build": "A", "If-Match": "1", "Idempotency-Key": "K38"},
+    "body": "{\"duration\": 50}",
+    "expected": "412 STALE_VERSION.",
+    "status": 412,
+    "contentType": "application/json; charset=utf-8",
+    "response": "{\"code\": \"STALE_VERSION\"}"
+  }
+]

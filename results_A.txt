@@ -1,0 +1,27 @@
+test_idempotency_repeat (__main__.ContractTests) ... FAIL
+test_initial_fixture (__main__.ContractTests) ... ok
+test_interval_touch (__main__.ContractTests) ... ok
+test_stale_version (__main__.ContractTests) ... ok
+test_state_after_failure (__main__.ContractTests) ... FAIL
+test_unknown (__main__.ContractTests) ... ok
+
+======================================================================
+FAIL: test_idempotency_repeat (__main__.ContractTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "tests_student.py", line 24, in test_idempotency_repeat
+    self.assertEqual(body2["version"], 2)
+AssertionError: 3 != 2
+
+======================================================================
+FAIL: test_state_after_failure (__main__.ContractTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "tests_student.py", line 35, in test_state_after_failure
+    self.assertEqual(rows_before, rows_after)
+AssertionError: Lists differ: [{'id': 101, 'title': 'Северный ветер', 'stage': 'river', 'start': 1080, 'duration': 40, 'status': 'draft', 'version': 1}, ...] != [{'id': 101, 'title': 'Северный ветер', 'stage': 'river', 'start': 1120, 'duration': 40, 'status': 'draft', 'version': 1}, ...]
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.045s
+
+FAILED (failures=2)
